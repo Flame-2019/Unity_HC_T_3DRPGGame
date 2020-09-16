@@ -19,6 +19,15 @@ public class Player : MonoBehaviour
     [Header("任務數量")]
     public Text textMission;
 
+    [Header("Bar")]
+    public Image barHp;
+    public Image barMp;
+    public Image barExp;
+
+    private float maxHp;
+    private float maxMp;
+    private float maxExp;
+
     private int count;
 
     public float exp;
@@ -69,6 +78,15 @@ public class Player : MonoBehaviour
         // 如果 數量 等於 NPC 需求數量 就 呼叫 NPC 結束任務
         if (count == npc.data.count) npc.Finish();
     }
+
+    public void Hit(float damage, Transform direction)
+    {
+        hp -= damage;
+        rig.AddForce(direction.forward * 100 + direction.up * 150);
+
+        barHp.fillAmount = hp / maxHp;
+        ani.SetTrigger("受傷觸發");
+    }
     #endregion
 
     /// <summary>
@@ -90,6 +108,9 @@ public class Player : MonoBehaviour
         cam = GameObject.Find("攝影機根物件").transform;     // 遊戲物件.尋找("物件名稱") - 建議不要在 Update 內使用
 
         npc = FindObjectOfType<NPC>();                      // 取得 NPC
+
+        maxHp = hp;
+        maxMp = mp;
     }
 
     /// <summary>
